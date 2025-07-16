@@ -1,0 +1,46 @@
+<div class="container mt-4">
+  <h2>Liste des Demandes</h2>
+  
+  @if (isLoading) {
+    <div class="text-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+    </div>
+  }
+  
+  @if (errorMessage) {
+    <div class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+  }
+  
+  @if (!isLoading && !errorMessage) {
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID Demande</th>
+          <th>Nom Collaborateur</th>
+          <th>Email</th>
+          <th>ID Formation</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (demande of demandes; track demande.id_demande) {
+          <tr>
+            <td>{{ demande.id_demande }}</td>
+            <td>{{ demande.nom_collaborateur }}</td>
+            <td>{{ demande.email_collaborateur }}</td>
+            <td>{{ demande.formation_id }}</td>
+            <td>
+              <span [class]="getStatusClass(demande.statut)">
+                {{ demande.statut }}
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

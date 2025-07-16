@@ -1,0 +1,59 @@
+<div class="container mt-4">
+  <h2>Nouvelle Demande de Formation</h2>
+
+  @if (errorMessage) {
+    <div class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      {{ successMessage }}
+    </div>
+  }
+
+  <form (ngSubmit)="onSubmit()" #demandeForm="ngForm">
+    <div class="mb-3">
+      <label for="nom" class="form-label">Nom complet *</label>
+      <input type="text" class="form-control" id="nom" 
+             [(ngModel)]="nouvelleDemande.nom_collaborateur" 
+             name="nom" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email professionnel *</label>
+      <input type="email" class="form-control" id="email" 
+             [(ngModel)]="nouvelleDemande.email_collaborateur" 
+             name="email" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="formation" class="form-label">Formation souhaitée *</label>
+      @if (nouvelleDemande.formation_titre) {
+        <input type="text" class="form-control" 
+               [(ngModel)]="nouvelleDemande.formation_titre" 
+               name="formationTitre" readonly>
+        <input type="hidden" [(ngModel)]="nouvelleDemande.formation_id" name="formation_id">
+      } @else {
+        <select class="form-select" id="formation"
+                [(ngModel)]="nouvelleDemande.formation_id" 
+                name="formation" required>
+          <option value="" disabled selected>Sélectionnez une formation</option>
+          @for (formation of formations; track formation.id) {
+            <option [value]="formation.id">{{ formation.titre }}</option>
+          }
+        </select>
+      }
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+      @if (isSubmitting) {
+        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        <span role="status">Envoi en cours...</span>
+      } @else {
+        Soumettre la demande
+      }
+    </button>
+  </form>
+</div>

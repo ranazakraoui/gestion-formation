@@ -1,0 +1,140 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-2xl mx-auto">
+    <!-- En-tête avec breadcrumb -->
+    <div class="mb-8">
+      <nav class="breadcrumb mb-4">
+        <a href="/formations" class="breadcrumb-item">
+          <i class="fas fa-home"></i>
+          Formations
+        </a>
+        <span class="breadcrumb-separator">
+          <i class="fas fa-chevron-right"></i>
+        </span>
+        <span class="breadcrumb-current">Modifier</span>
+      </nav>
+      
+      <div class="header-card">
+        <div class="header-icon">
+          <i class="fas fa-edit"></i>
+        </div>
+        <div>
+          <h1 class="header-title">Modifier la formation</h1>
+          <p class="header-subtitle">Mettez à jour les informations de votre formation</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulaire principal -->
+    <div class="form-container" *ngIf="formation">
+      <div class="form-header">
+        <h2 class="form-title">
+          <i class="fas fa-graduation-cap"></i>
+          Informations de la formation
+        </h2>
+      </div>
+
+      <div class="form-body">
+        <!-- Champ Titre -->
+        <div class="form-group">
+          <label for="titre" class="form-label">
+            <i class="fas fa-tag"></i>
+            Titre de la formation
+          </label>
+          <div class="input-wrapper">
+            <input 
+              id="titre" 
+              [(ngModel)]="formation.titre" 
+              class="form-input"
+              placeholder="Ex: Formation Angular Avancé"
+              type="text"
+            />
+            <div class="input-focus-ring"></div>
+          </div>
+        </div>
+
+        <!-- Champ Description -->
+        <div class="form-group">
+          <label for="description" class="form-label">
+            <i class="fas fa-align-left"></i>
+            Description détaillée
+          </label>
+          <div class="input-wrapper">
+            <textarea 
+              id="description" 
+              [(ngModel)]="formation.description"
+              class="form-textarea"
+              placeholder="Décrivez le contenu, les objectifs et les compétences acquises..."
+              rows="6"
+            ></textarea>
+            <div class="input-focus-ring"></div>
+          </div>
+        </div>
+
+        <!-- Champ Durée (si disponible) -->
+        <div class="form-group" *ngIf="formation.duree !== undefined">
+          <label for="duree" class="form-label">
+            <i class="fas fa-clock"></i>
+            Durée (heures)
+          </label>
+          <div class="input-wrapper">
+            <input 
+              id="duree" 
+              [(ngModel)]="formation.duree" 
+              class="form-input"
+              type="number"
+              min="1"
+              placeholder="Ex: 40"
+            />
+            <div class="input-focus-ring"></div>
+          </div>
+        </div>
+
+        <!-- Champ Statut (si disponible) -->
+        <div class="form-group" *ngIf="formation.planifiee !== undefined">
+          <label class="form-label">
+            <i class="fas fa-chart-line"></i>
+            Statut de la formation
+          </label>
+          <div class="toggle-container">
+            <input 
+              id="planifiee" 
+              [(ngModel)]="formation.planifiee" 
+              type="checkbox"
+              class="toggle-input"
+            />
+            <label for="planifiee" class="toggle-label">
+              <span class="toggle-slider"></span>
+              <span class="toggle-text">
+                {{ formation.planifiee ? 'Formation planifiée' : 'En attente de planification' }}
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button (click)="saveFormation()" class="btn btn-primary">
+          <i class="fas fa-save"></i>
+          <span>Enregistrer les modifications</span>
+        </button>
+        <button (click)="router.navigate(['/formations'])" class="btn btn-secondary">
+          <i class="fas fa-times"></i>
+          <span>Annuler</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- État de chargement -->
+    <div *ngIf="!formation" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Chargement de la formation...</p>
+    </div>
+
+    <!-- Message de succès -->
+    <div class="success-message" *ngIf="showSuccessMessage">
+      <i class="fas fa-check-circle"></i>
+      <span>Formation mise à jour avec succès!</span>
+    </div>
+  </div>
+</div>

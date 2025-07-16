@@ -3,6 +3,8 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+        "types":[ "jasmine", "jest", "node"],
+
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -18,6 +20,9 @@
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
+      "enableTemplateInputTypeCheck": true,
+  "extendedTemplateDiagnostics": true,
+
     "strictInputAccessModifiers": true,
     "typeCheckHostBindings": true,
     "strictTemplates": true

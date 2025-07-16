@@ -1,0 +1,106 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold formation-title">Gestion des Formations</h1>
+      <button 
+        (click)="toggleAddForm()"
+        class="add-formation-btn"
+      >
+        <i class="fas fa-plus"></i>
+        <span>{{ showAddForm ? 'Annuler' : 'Ajouter une formation' }}</span>
+      </button>
+    </div>
+
+    <!-- Formulaire d'ajout -->
+    <div *ngIf="showAddForm" class="mb-8 bg-white p-6 rounded-lg shadow animated-border">
+      <h2 class="text-xl font-semibold mb-4">Nouvelle Formation</h2>
+      <app-ajouter-formation 
+        (formationAdded)="onFormationAdded($event)"
+        (closeModal)="toggleAddForm()"
+      ></app-ajouter-formation>
+    </div>
+
+    <!-- Liste des formations -->
+    <div class="formation-table-container">
+      <div *ngIf="isLoading" class="p-8 text-center">
+        <div class="loading-spinner mx-auto"></div>
+        <p class="mt-4 text-gray-600">Chargement des formations...</p>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message">
+        <i class="fas fa-exclamation-triangle mr-2"></i>
+        {{ errorMessage }}
+      </div>
+
+      <table *ngIf="!isLoading" class="formation-table">
+        <thead>
+          <tr>
+            <th>
+              <i class="fas fa-graduation-cap mr-2"></i>
+              Titre
+            </th>
+            <th>
+              <i class="fas fa-align-left mr-2"></i>
+              Description
+            </th>
+            <th>
+              <i class="fas fa-clock mr-2"></i>
+              Durée
+            </th>
+            <th>
+              <i class="fas fa-chart-line mr-2"></i>
+              Statut
+            </th>
+            <th>
+              <i class="fas fa-cogs mr-2"></i>
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let formation of formations" class="formation-row">
+            <td class="formation-title-cell">
+              <i class="fas fa-book mr-2 text-blue-500"></i>
+              {{ formation.titre }}
+            </td>
+            <td class="formation-description">
+              {{ formation.description | truncate:50 }}
+            </td>
+            <td class="formation-duration">
+              <i class="fas fa-hourglass-half mr-1"></i>
+              {{ formation.duree }}&nbsp;heures
+            </td>
+            <td>
+              <span [ngClass]="{
+                'status-badge status-planned': formation.planifiee,
+                'status-badge status-pending': !formation.planifiee
+              }">
+                <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                {{ formation.planifiee ? 'Planifiée' : 'En attente' }}
+              </span>
+            </td>
+            <td>
+              <div class="actions-group">
+                <a [routerLink]="['/formations/edit', formation.id]" class="btn btn-primary">
+                  <i class="fas fa-edit"></i>
+                  <span>Modifier</span>
+                </a>
+                <button (click)="deleteFormation(formation.id)" class="btn btn-danger">
+                  <i class="fas fa-trash"></i>
+                  <span>Supprimer</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Message si aucune formation -->
+      <div *ngIf="!isLoading && formations.length === 0" class="empty-state">
+        <i class="fas fa-folder-open text-6xl text-gray-300 mb-4"></i>
+        <h3 class="text-xl font-semibold text-gray-600 mb-2">Aucune formation trouvée</h3>
+        <p class="text-gray-500">Commencez par ajouter votre première formation</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+/* Style des badges de statut */
+.badge-en-attente {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.badge-approuvee {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.badge-rejetee {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* Style de base du tableau */
+.table {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.table th {
+  background-color: #343a40;
+  color: white;
+}
