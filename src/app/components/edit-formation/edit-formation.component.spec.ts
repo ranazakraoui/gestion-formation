@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { EditFormationComponent } from './edit-formation.component.js';
+import { EditFormationComponent } from './edit-formation.component';
 
 describe('EditFormationComponent', () => {
   let component: EditFormationComponent;

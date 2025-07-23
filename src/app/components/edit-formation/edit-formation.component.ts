@@ -15,7 +15,7 @@ import { ApiService } from '../../services/api.service';
 export class EditFormationComponent implements OnInit {
   formationId!: number;
   formation!: Formation;
-  showSuccessMessage: boolean = false; // ✅ propriété ajoutée
+  showSuccessMessage: boolean = false;
 
   constructor(
     private route: ActivatedRoute,

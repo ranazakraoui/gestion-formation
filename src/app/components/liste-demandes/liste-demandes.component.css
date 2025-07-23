@@ -1,26 +1,29 @@
-/* Style des badges de statut */
+.container {
+  padding: 20px;
+}
+
+.loading {
+  font-style: italic;
+  color: gray;
+}
+
+/* Badges pour statut */
+.badge {
+  padding: 5px 10px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
 .badge-en-attente {
-  background-color: #ffc107;
-  color: #000;
+  background-color: orange;
 }
 
 .badge-approuvee {
-  background-color: #28a745;
-  color: #fff;
+  background-color: green;
 }
 
 .badge-rejetee {
-  background-color: #dc3545;
-  color: #fff;
-}
-
-/* Style de base du tableau */
-.table {
-  width: 100%;
-  margin-top: 1rem;
-}
-
-.table th {
-  background-color: #343a40;
-  color: white;
+  background-color: red;
 }

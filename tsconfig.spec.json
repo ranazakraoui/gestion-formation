@@ -13,5 +13,8 @@
     "src/**/*.spec.ts",
     "src/**/*.d.ts",
     "src/test.ts"
-  ]
+  ],
+   "files": [
+    "src/test.ts"
+  ],
 }

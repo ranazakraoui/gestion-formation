@@ -1,3 +1,4 @@
+// src/app/components/ajouter-formation/ajouter-formation.component.ts
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -32,8 +33,6 @@ export class AjouterFormationComponent {
   }
 
   onSubmit(): void {
-    console.log('Soumission du formulaire :', this.formationForm.value);
-
     if (this.formationForm.valid) {
       const newFormation: Formation = {
         ...this.formationForm.value,
@@ -44,9 +43,9 @@ export class AjouterFormationComponent {
       this.apiService.createFormation(newFormation).subscribe({
         next: (formation) => {
           this.toastr.success('Formation enregistrée !');
-          console.log('Formation ajoutée avec succès :', formation);
+          this.apiService.addFormationToList(formation); // 🔁 mise à jour auto
           this.formationAdded.emit(formation);
-          this.close(); // Fermer après succès
+          this.close();
         },
         error: (error) => {
           console.error('Erreur complète:', error);

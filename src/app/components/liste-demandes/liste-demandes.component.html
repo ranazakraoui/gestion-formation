@@ -1,46 +1,67 @@
 <div class="container mt-4">
-  <h2>Liste des Demandes</h2>
-  
-  @if (isLoading) {
-    <div class="text-center">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Chargement...</span>
-      </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-primary">Liste des Demandes</h2>
+    <div>
+      <!-- Bouton pour créer une nouvelle demande -->
+      <a routerLink="/demandes/nouvelle" class="btn btn-success me-2">
+        <i class="bi bi-plus-circle me-1"></i>
+        Nouvelle Demande
+      </a>
+      <!-- Bouton rafraîchir -->
+      <button (click)="loadData()" class="btn btn-sm btn-outline-primary">
+        <i class="bi bi-arrow-clockwise"></i> Rafraîchir
+      </button>
     </div>
-  }
-  
-  @if (errorMessage) {
-    <div class="alert alert-danger">
-      {{ errorMessage }}
+  </div>
+
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
     </div>
-  }
-  
-  @if (!isLoading && !errorMessage) {
-    <table class="table table-striped">
-      <thead>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!isLoading && demandes.length === 0" class="alert alert-info">
+    <div class="d-flex justify-content-between align-items-center">
+      <span>Aucune demande trouvée.</span>
+      <a routerLink="/demandes/nouvelle" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i>
+        Créer ma première demande
+      </a>
+    </div>
+  </div>
+
+  <div class="table-responsive" *ngIf="!isLoading && demandes.length > 0">
+    <table class="table table-striped table-hover">
+      <thead class="table-dark">
         <tr>
-          <th>ID Demande</th>
-          <th>Nom Collaborateur</th>
-          <th>Email</th>
-          <th>ID Formation</th>
+          <th>ID</th>
+          <th>Collaborateur</th>
+          <th>Formation</th>
           <th>Statut</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        @for (demande of demandes; track demande.id_demande) {
-          <tr>
-            <td>{{ demande.id_demande }}</td>
-            <td>{{ demande.nom_collaborateur }}</td>
-            <td>{{ demande.email_collaborateur }}</td>
-            <td>{{ demande.formation_id }}</td>
-            <td>
-              <span [class]="getStatusClass(demande.statut)">
-                {{ demande.statut }}
-              </span>
-            </td>
-          </tr>
-        }
+        <tr *ngFor="let demande of demandes">
+          <td>{{ demande.id_demande }}</td>
+          <td>{{ demande.nom_collaborateur }}</td>
+          <td>{{ getFormationTitre(demande.formation_id) }}</td>
+          <td>
+            <span [class]="getStatusClass(demande.statut)">
+              {{ demande.statut }}
+            </span>
+          </td>
+          <td>
+            <a [routerLink]="['/demandes', demande.id_demande]" class="btn btn-sm btn-info">
+              Détails
+            </a>
+          </td>
+        </tr>
       </tbody>
     </table>
-  }
+  </div>
 </div>

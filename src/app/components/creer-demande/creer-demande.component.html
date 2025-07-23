@@ -1,59 +1,119 @@
-<div class="container mt-4">
-  <h2>Nouvelle Demande de Formation</h2>
+<div class="container mt-5">
+  <h2 class="text-primary mb-4">Nouvelle Demande de Formation</h2>
 
-  @if (errorMessage) {
-    <div class="alert alert-danger">
-      {{ errorMessage }}
+  <!-- Messages d'état -->
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show">
+    <strong>Erreur :</strong> {{ errorMessage }}
+    <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show">
+    <strong>Succès :</strong> {{ successMessage }}
+  </div>
+
+  <!-- Chargement -->
+  <div *ngIf="isLoading" class="text-center py-4">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
     </div>
-  }
+    <p class="mt-2">Chargement des formations disponibles...</p>
+  </div>
 
-  @if (successMessage) {
-    <div class="alert alert-success">
-      {{ successMessage }}
+  <!-- Formulaire -->
+  <form *ngIf="!isLoading" (ngSubmit)="onSubmit()" #demandeForm="ngForm" class="card p-4 shadow-sm bg-light">
+    
+    <!-- Section Informations -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <h5 class="text-secondary mb-3">Informations du demandeur</h5>
+      </div>
+      
+      <div class="col-md-6 mb-3">
+        <label for="nom" class="form-label required">Nom complet</label>
+        <input type="text" id="nom" name="nom" class="form-control"
+               [(ngModel)]="nouvelleDemande.nom_collaborateur" required
+               [class.is-invalid]="errorMessage && !nouvelleDemande.nom_collaborateur">
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="email" class="form-label required">Email professionnel</label>
+        <input type="email" id="email" name="email" class="form-control"
+               [(ngModel)]="nouvelleDemande.email_collaborateur" required
+               [class.is-invalid]="errorMessage && !nouvelleDemande.email_collaborateur">
+      </div>
     </div>
-  }
 
-  <form (ngSubmit)="onSubmit()" #demandeForm="ngForm">
-    <div class="mb-3">
-      <label for="nom" class="form-label">Nom complet *</label>
-      <input type="text" class="form-control" id="nom" 
-             [(ngModel)]="nouvelleDemande.nom_collaborateur" 
-             name="nom" required>
-    </div>
-
-    <div class="mb-3">
-      <label for="email" class="form-label">Email professionnel *</label>
-      <input type="email" class="form-control" id="email" 
-             [(ngModel)]="nouvelleDemande.email_collaborateur" 
-             name="email" required>
-    </div>
-
-    <div class="mb-3">
-      <label for="formation" class="form-label">Formation souhaitée *</label>
-      @if (nouvelleDemande.formation_titre) {
-        <input type="text" class="form-control" 
-               [(ngModel)]="nouvelleDemande.formation_titre" 
-               name="formationTitre" readonly>
-        <input type="hidden" [(ngModel)]="nouvelleDemande.formation_id" name="formation_id">
-      } @else {
-        <select class="form-select" id="formation"
-                [(ngModel)]="nouvelleDemande.formation_id" 
-                name="formation" required>
-          <option value="" disabled selected>Sélectionnez une formation</option>
-          @for (formation of formations; track formation.id) {
-            <option [value]="formation.id">{{ formation.titre }}</option>
-          }
+    <!-- Section Formation -->
+    <div class="mb-4">
+      <h5 class="text-secondary mb-3">Sélection de la formation</h5>
+      
+      <div class="mb-3">
+        <label for="formation" class="form-label required">Formation souhaitée</label>
+        <select id="formation" name="formation" class="form-select"
+                [(ngModel)]="nouvelleDemande.formation_id" (change)="onFormationChange()" required
+                [class.is-invalid]="errorMessage && !nouvelleDemande.formation_id">
+          <option value="0" disabled>Sélectionnez une formation</option>
+          <option *ngFor="let formation of formations" [value]="formation.id">
+            {{ formation.titre }} ({{ formation.duree }}h)
+          </option>
         </select>
-      }
+      </div>
+
+      <!-- Aperçu formation -->
+      <div *ngIf="selectedFormation" class="card bg-info bg-opacity-10 border-info">
+        <div class="card-body">
+          <h6 class="card-title text-info">{{ selectedFormation.titre }}</h6>
+          <p class="card-text">{{ selectedFormation.description }}</p>
+          <div class="row">
+            <div class="col-sm-6">
+              <small class="text-muted">
+                <strong>Durée :</strong> {{ selectedFormation.duree }}h
+              </small>
+            </div>
+            <div class="col-sm-6">
+              <small class="text-muted">
+                <strong>Statut :</strong> 
+                <span class="badge" [ngClass]="{
+                  'bg-success': selectedFormation.planifiee,
+                  'bg-warning': !selectedFormation.planifiee
+                }">
+                  {{ selectedFormation.planifiee ? 'Planifiée' : 'Non planifiée' }}
+                </span>
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="selectedFormation && !selectedFormation.planifiee" 
+           class="alert alert-warning mt-3">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Cette formation n'est pas encore planifiée.
+      </div>
     </div>
 
-    <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
-      @if (isSubmitting) {
-        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-        <span role="status">Envoi en cours...</span>
-      } @else {
-        Soumettre la demande
-      }
-    </button>
+    <!-- Bouton soumission -->
+    <div class="d-grid">
+      <button type="submit" class="btn btn-primary btn-lg"
+              [disabled]="isSubmitting || !demandeForm.form.valid">
+        <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+        {{ isSubmitting ? 'Envoi en cours...' : 'Soumettre la demande' }}
+      </button>
+    </div>
+
+    <div class="mt-3 text-muted small">
+      <i class="bi bi-info-circle me-1"></i>
+      Les champs marqués d'un <span class="required">*</span> sont obligatoires.
+    </div>
   </form>
+
+  <!-- Actions secondaires -->
+  <div *ngIf="!isLoading" class="mt-4 text-center">
+    <a routerLink="/formations" class="btn btn-outline-secondary me-2">
+      <i class="bi bi-arrow-left me-1"></i> Retour aux formations
+    </a>
+    <a routerLink="/demandes" class="btn btn-outline-primary">
+      <i class="bi bi-list-ul me-1"></i> Voir mes demandes
+    </a>
+  </div>
 </div>
