@@ -1,6 +1,6 @@
 /* liste-formations.component.css */
 
-/* Variables CSS pour une palette de couleurs moderne */
+/* ============ Variables CSS ============ */
 :root {
   --primary-color: #667eea;
   --secondary-color: #764ba2;
@@ -20,7 +20,7 @@
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Animations */
+/* ============ Animations ============ */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -47,7 +47,7 @@
   100% { left: 100%; }
 }
 
-/* Titre principal avec dégradé */
+/* ============ Styles Généraux ============ */
 .formation-title {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   -webkit-background-clip: text;
@@ -57,17 +57,52 @@
   animation: fadeInUp 0.6s ease-out;
 }
 
-/* Conteneur principal du tableau */
+/* ============ Barre de Recherche ============ */
+.search-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.search-box {
+  position: relative;
+  width: 250px;
+  margin-right: 1rem;
+}
+
+.search-input {
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
+  border: 1px solid var(--border-light);
+  border-radius: 0.5rem;
+  width: 100%;
+  transition: var(--transition);
+  background-color: var(--bg-primary);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+}
+
+/* ============ Tableau des Formations ============ */
 .formation-table-container {
   background: var(--bg-primary);
-  border-radius: 16px;
+  border-radius: 1rem;
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--border-light);
   animation: fadeInUp 0.8s ease-out;
 }
 
-/* Styles pour le tableau */
 .formation-table {
   width: 100%;
   border-collapse: collapse;
@@ -121,7 +156,6 @@
   margin-right: 0.5rem;
 }
 
-/* Lignes du tableau */
 .formation-row {
   transition: var(--transition);
   position: relative;
@@ -155,7 +189,6 @@
   vertical-align: middle;
 }
 
-/* Cellules spécifiques */
 .formation-title-cell {
   font-weight: 600;
   color: var(--text-primary);
@@ -172,7 +205,7 @@
   color: var(--primary-color);
 }
 
-/* Styles pour les badges de statut */
+/* ============ Badges de Statut ============ */
 .status-badge {
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -225,7 +258,7 @@
   transform: scale(1.05);
 }
 
-/* Boutons stylisés */
+/* ============ Boutons ============ */
 .btn {
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -297,7 +330,6 @@
   transform: scale(1.1) rotate(5deg);
 }
 
-/* Bouton Ajouter une formation */
 .add-formation-btn {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
@@ -349,14 +381,13 @@
   position: relative;
 }
 
-/* Groupe d'actions */
 .actions-group {
   display: flex;
   gap: 0.75rem;
   align-items: center;
 }
 
-/* Spinner de chargement */
+/* ============ États ============ */
 .loading-spinner {
   border: 3px solid #f3f4f6;
   border-top: 3px solid var(--primary-color);
@@ -366,7 +397,6 @@
   animation: spin 1s linear infinite;
 }
 
-/* Message d'erreur */
 .error-message {
   background: linear-gradient(135deg, #fee2e2, #fecaca);
   color: #dc2626;
@@ -378,14 +408,12 @@
   align-items: center;
 }
 
-/* État vide */
 .empty-state {
   text-align: center;
   padding: 3rem;
   background: linear-gradient(135deg, #f8fafc, #f1f5f9);
 }
 
-/* Conteneur avec bordure animée */
 .animated-border {
   position: relative;
   overflow: hidden;
@@ -402,7 +430,7 @@
   animation: slideIn 2s ease-in-out infinite;
 }
 
-/* Effets sur les lignes paires */
+/* ============ Lignes alternées ============ */
 .formation-table tbody tr:nth-child(even) {
   background-color: #f9fafb;
 }
@@ -411,7 +439,7 @@
   background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
 }
 
-/* Responsive Design */
+/* ============ Responsive Design ============ */
 @media (max-width: 768px) {
   .formation-table-container {
     border-radius: 12px;
@@ -441,6 +469,10 @@
   .formation-description {
     max-width: 200px;
   }
+  
+  .search-box {
+    width: 200px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -469,5 +501,17 @@
   .actions-group {
     flex-direction: row;
     gap: 0.25rem;
+  }
+  
+  .search-box {
+    width: 150px;
+  }
+  
+  .search-input {
+    padding-left: 2rem;
+  }
+  
+  .search-icon {
+    left: 0.5rem;
   }
 }

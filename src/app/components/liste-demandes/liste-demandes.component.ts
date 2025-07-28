@@ -4,17 +4,20 @@ import { ApiService } from '../../services/api.service';
 import { Demande } from '../../models/demande.model';
 import { Formation } from '../../models/formation.model';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-liste-demandes',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './liste-demandes.component.html',
   styleUrls: ['./liste-demandes.component.css']
 })
 export class ListeDemandesComponent implements OnInit {
   demandes: Demande[] = [];
+  filteredDemandes: Demande[] = [];
   formations: Formation[] = [];
+  searchTerm: string = '';
   isLoading = true;
   errorMessage = '';
 
@@ -44,8 +47,8 @@ export class ListeDemandesComponent implements OnInit {
   loadDemandes(): void {
     this.apiService.getDemandes().subscribe({
       next: (data: Demande[]) => {
-        console.log('Données reçues:', data); // Debug
         this.demandes = data;
+        this.filteredDemandes = [...this.demandes];
         this.isLoading = false;
       },
       error: (error: any) => {
@@ -56,16 +59,30 @@ export class ListeDemandesComponent implements OnInit {
     });
   }
 
+  searchDemandes(): void {
+    if (!this.searchTerm) {
+      this.filteredDemandes = [...this.demandes];
+      return;
+    }
+    
+    const term = this.searchTerm.toLowerCase();
+    this.filteredDemandes = this.demandes.filter(demande => {
+      const formationTitre = this.getFormationTitre(demande.formation_id).toLowerCase();
+      return (
+        demande.nom_collaborateur.toLowerCase().includes(term) ||
+        formationTitre.includes(term) ||
+        demande.statut.toLowerCase().includes(term)
+    )});
+  }
+
   getFormationTitre(formationId: number): string {
     if (!formationId) return 'Non spécifiée';
-    
     const formation = this.formations.find(f => f.id === formationId);
     return formation?.titre || `ID: ${formationId}`;
   }
 
   getStatusClass(statut: string): string {
     if (!statut) return 'badge bg-secondary';
-    
     switch (statut.toLowerCase()) {
       case 'approuvée': return 'badge bg-success';
       case 'rejetée': return 'badge bg-danger';

@@ -27,3 +27,11 @@
 .badge-rejetee {
   background-color: red;
 }
+/* Ajoutez ceci si vous voulez un style cohérent avec le premier composant */
+.form-control {
+  padding-left: 2.5rem !important;
+}
+
+.bi-search {
+  color: #6c757d;
+}

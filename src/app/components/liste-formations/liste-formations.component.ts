@@ -6,16 +6,19 @@ import { AjouterFormationComponent } from '../ajouter-formation/ajouter-formatio
 import { Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { TruncatePipe } from '../../shared/pipes/truncate-pipe';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-liste-formations',
   standalone: true,
-  imports: [CommonModule, AjouterFormationComponent, TruncatePipe, RouterLink],
+  imports: [CommonModule, AjouterFormationComponent, TruncatePipe, RouterLink, FormsModule],
   templateUrl: './liste-formations.component.html',
   styleUrls: ['./liste-formations.component.css']
 })
 export class ListeFormationsComponent implements OnInit {
   formations: Formation[] = [];
+  filteredFormations: Formation[] = []; // Nouvelle propriété pour les résultats filtrés
+  searchTerm: string = ''; // Terme de recherche
   isLoading = true;
   errorMessage = '';
   showAddForm = false;
@@ -23,46 +26,49 @@ export class ListeFormationsComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private router: Router
-  ) {
-    console.log('ListeFormationsComponent - Constructor appelé');
-  }
+  ) {}
 
   ngOnInit(): void {
-    console.log('ListeFormationsComponent - ngOnInit appelé');
     this.loadFormations();
   }
 
 loadFormations(): void {
-  console.log('Tentative de chargement depuis: http://localhost:8081/formations');
-  
-  this.apiService.getFormations().subscribe({
-    next: (data) => {
-      console.log('Données reçues:', data);
-      this.formations = data;
-      this.isLoading = false; // ← ✅ ajout obligatoire ici
-    },
-    error: (err) => {
-      console.error('Détails de l\'erreur:', err);
-      if (err.status === 0) {
-        this.errorMessage = 'Impossible de se connecter au serveur. Vérifiez qu\'il est démarré.';
-      } else {
-        this.errorMessage = `Erreur serveur: ${err.status} ${err.statusText}`;
+    this.apiService.getFormations().subscribe({
+      next: (data) => {
+        this.formations = data;
+        this.filteredFormations = [...this.formations]; // Initialise filteredFormations
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        this.errorMessage = err.status === 0 
+          ? 'Impossible de se connecter au serveur' 
+          : `Erreur serveur: ${err.status}`;
+        this.isLoading = false;
       }
-      this.isLoading = false; // ← ✅ aussi ici en cas d’erreur
+    });
+  }
+
+   searchFormations(): void {
+    if (!this.searchTerm) {
+      this.filteredFormations = [...this.formations];
+      return;
     }
-  });
-}
-
-
+    
+    const term = this.searchTerm.toLowerCase();
+    this.filteredFormations = this.formations.filter(formation => 
+      formation.titre.toLowerCase().includes(term) ||
+      (formation.description && formation.description.toLowerCase().includes(term))
+    );
+  }
   toggleAddForm(): void {
     this.showAddForm = !this.showAddForm;
   }
 
   onFormationAdded(newFormation: Formation | null): void {
     if (newFormation) {
-this.loadFormations();
+      this.loadFormations();
       this.showAddForm = false;
-      console.log('Formation ajoutée:', newFormation);
     }
   }
 
@@ -71,7 +77,7 @@ this.loadFormations();
       this.apiService.deleteFormation(id).subscribe({
         next: () => {
           this.formations = this.formations.filter(f => f.id !== id);
-          console.log('Formation supprimée, ID:', id);
+          this.filteredFormations = this.filteredFormations.filter(f => f.id !== id);
         },
         error: (error) => {
           console.error('Erreur lors de la suppression:', error);

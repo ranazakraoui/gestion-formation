@@ -2,16 +2,32 @@
   <div class="max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-8">
       <h1 class="text-3xl font-bold formation-title">Gestion des Formations</h1>
-      <button 
-        (click)="toggleAddForm()"
-        class="add-formation-btn"
-      >
-        <i class="fas fa-plus"></i>
-        <span>{{ showAddForm ? 'Annuler' : 'Ajouter une formation' }}</span>
-      </button>
+      <div class="flex items-center space-x-4">
+        <!-- Barre de recherche ajoutée ici -->
+       <div class="flex justify-end mb-4">
+      <div class="relative w-64 mr-4">
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="searchFormations()"
+          placeholder="Rechercher une formation..."
+          class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full"
+        />
+        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+      </div>
+    </div>
+        <!-- Fin de la barre de recherche -->
+        <button 
+          (click)="toggleAddForm()"
+          class="add-formation-btn"
+        >
+          <i class="fas fa-plus"></i>
+          <span>{{ showAddForm ? 'Annuler' : 'Ajouter une formation' }}</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Formulaire d'ajout -->
+    <!-- Formulaire d'ajout (inchangé) -->
     <div *ngIf="showAddForm" class="mb-8 bg-white p-6 rounded-lg shadow animated-border">
       <h2 class="text-xl font-semibold mb-4">Nouvelle Formation</h2>
       <app-ajouter-formation 
@@ -20,7 +36,7 @@
       ></app-ajouter-formation>
     </div>
 
-    <!-- Liste des formations -->
+    <!-- Liste des formations (inchangée sauf filteredFormations) -->
     <div class="formation-table-container">
       <div *ngIf="isLoading" class="p-8 text-center">
         <div class="loading-spinner mx-auto"></div>
@@ -58,7 +74,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let formation of formations" class="formation-row">
+          <tr *ngFor="let formation of filteredFormations" class="formation-row">
             <td class="formation-title-cell">
               <i class="fas fa-book mr-2 text-blue-500"></i>
               {{ formation.titre }}
@@ -95,11 +111,15 @@
         </tbody>
       </table>
 
-      <!-- Message si aucune formation -->
-      <div *ngIf="!isLoading && formations.length === 0" class="empty-state">
+      <!-- Message si aucune formation (adapté pour la recherche) -->
+      <div *ngIf="!isLoading && filteredFormations.length === 0" class="empty-state">
         <i class="fas fa-folder-open text-6xl text-gray-300 mb-4"></i>
-        <h3 class="text-xl font-semibold text-gray-600 mb-2">Aucune formation trouvée</h3>
-        <p class="text-gray-500">Commencez par ajouter votre première formation</p>
+        <h3 class="text-xl font-semibold text-gray-600 mb-2">
+          {{ searchTerm ? 'Aucun résultat trouvé' : 'Aucune formation trouvée' }}
+        </h3>
+        <p class="text-gray-500">
+          {{ searchTerm ? 'Essayez avec d\'autres termes' : 'Commencez par ajouter votre première formation' }}
+        </p>
       </div>
     </div>
   </div>

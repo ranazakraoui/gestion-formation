@@ -1,19 +1,30 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="text-primary">Liste des Demandes</h2>
-    <div>
-      <!-- Bouton pour créer une nouvelle demande -->
-      <a routerLink="/demandes/nouvelle" class="btn btn-success me-2">
-        <i class="bi bi-plus-circle me-1"></i>
-        Nouvelle Demande
-      </a>
-      <!-- Bouton rafraîchir -->
-      <button (click)="loadData()" class="btn btn-sm btn-outline-primary">
-        <i class="bi bi-arrow-clockwise"></i> Rafraîchir
-      </button>
+    <div class="d-flex align-items-center gap-3">
+      <div class="position-relative">
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="searchDemandes()"
+          placeholder="Rechercher des demandes..."
+          class="form-control ps-4"
+        />
+        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-2"></i>
+      </div>
+      <div>
+        <a routerLink="/demandes/nouvelle" class="btn btn-success me-2">
+          <i class="bi bi-plus-circle me-1"></i>
+          Nouvelle Demande
+        </a>
+        <button (click)="loadData()" class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-arrow-clockwise"></i> Rafraîchir
+        </button>
+      </div>
     </div>
   </div>
 
+  <!-- Messages de chargement et d'erreur -->
   <div *ngIf="isLoading" class="text-center">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Chargement...</span>
@@ -24,9 +35,10 @@
     {{ errorMessage }}
   </div>
 
-  <div *ngIf="!isLoading && demandes.length === 0" class="alert alert-info">
+  <!-- Message si aucune demande -->
+  <div *ngIf="!isLoading && filteredDemandes.length === 0" class="alert alert-info">
     <div class="d-flex justify-content-between align-items-center">
-      <span>Aucune demande trouvée.</span>
+      <span>{{ searchTerm ? 'Aucune demande ne correspond à votre recherche' : 'Aucune demande trouvée.' }}</span>
       <a routerLink="/demandes/nouvelle" class="btn btn-primary">
         <i class="bi bi-plus-circle me-1"></i>
         Créer ma première demande
@@ -34,7 +46,8 @@
     </div>
   </div>
 
-  <div class="table-responsive" *ngIf="!isLoading && demandes.length > 0">
+  <!-- Tableau des demandes -->
+  <div class="table-responsive" *ngIf="!isLoading && filteredDemandes.length > 0">
     <table class="table table-striped table-hover">
       <thead class="table-dark">
         <tr>
@@ -46,7 +59,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let demande of demandes">
+        <tr *ngFor="let demande of filteredDemandes">
           <td>{{ demande.id_demande }}</td>
           <td>{{ demande.nom_collaborateur }}</td>
           <td>{{ getFormationTitre(demande.formation_id) }}</td>

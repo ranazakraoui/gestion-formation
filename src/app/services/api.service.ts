@@ -7,7 +7,7 @@ import { Formation } from '../models/formation.model';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  private readonly BASE_URL = 'http://localhost:8081/api';
+  private readonly BASE_URL = 'http://localhost:8082/api';
   private formationsSubject = new BehaviorSubject<Formation[]>([]);
   public formations$ = this.formationsSubject.asObservable();
 
